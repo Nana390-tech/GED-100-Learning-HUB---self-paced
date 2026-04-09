@@ -1,0 +1,399 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GED 100 Learning Hub</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --grad: linear-gradient(135deg,#7c3aed,#db2777);
+    --grad2: linear-gradient(135deg,#6d28d9,#be185d);
+    --card-bg:#fff;
+    --shadow:0 4px 20px rgba(124,58,237,.13);
+    --text:#1e1b4b;
+    --muted:#6b7280;
+    --reading:#7c3aed;
+    --writing:#db2777;
+    --listening:#0891b2;
+  }
+  body{font-family:'Segoe UI',sans-serif;background:#f5f3ff;color:var(--text);min-height:100vh;}
+
+  /* HERO */
+  .hero{
+    background:var(--grad);
+    color:#fff;
+    text-align:center;
+    padding:48px 20px 60px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+  .hero-badge{
+    display:inline-block;
+    background:rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:50px;
+    padding:6px 18px;
+    font-size:.8rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:10px;letter-spacing:-.5px;}
+  .hero p{font-size:1.05rem;opacity:.88;max-width:500px;margin:0 auto 28px;}
+  .stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+  .stat{text-align:center;}
+  .stat-num{font-size:1.8rem;font-weight:800;}
+  .stat-label{font-size:.75rem;opacity:.75;text-transform:uppercase;letter-spacing:.08em;}
+
+  /* FILTERS */
+  .filters{
+    display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+    padding:28px 20px 10px;
+  }
+  .filter-btn{
+    padding:9px 22px;border-radius:50px;border:2px solid transparent;
+    background:#fff;color:var(--muted);font-size:.9rem;font-weight:600;
+    cursor:pointer;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.07);
+  }
+  .filter-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.1);}
+  .filter-btn.active{background:var(--grad);color:#fff;border-color:transparent;}
+  .filter-btn.reading{--c:var(--reading);}
+  .filter-btn.writing{--c:var(--writing);}
+  .filter-btn.listening{--c:var(--listening);}
+
+  /* SECTION LABELS */
+  .section-label{
+    display:flex;align-items:center;gap:10px;
+    padding:24px 24px 8px;
+    font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);
+    max-width:1100px;margin:0 auto;
+  }
+  .section-label::after{content:'';flex:1;height:1px;background:#e5e7eb;}
+
+  /* GRID */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:22px;
+    padding:12px 24px 48px;
+    max-width:1100px;margin:0 auto;
+  }
+
+  /* CARDS */
+  .card{
+    background:var(--card-bg);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .22s,box-shadow .22s;
+    border:1px solid rgba(124,58,237,.08);
+  }
+  .card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(124,58,237,.18);}
+  .card-top{
+    padding:22px 22px 16px;
+    display:flex;align-items:flex-start;gap:14px;
+  }
+  .card-icon{
+    width:52px;height:52px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;flex-shrink:0;
+  }
+  .reading .card-icon{background:#ede9fe;}
+  .writing .card-icon{background:#fce7f3;}
+  .listening .card-icon{background:#e0f2fe;}
+
+  .card-meta{flex:1;}
+  .card-category{
+    font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+    margin-bottom:4px;
+  }
+  .reading .card-category{color:var(--reading);}
+  .writing .card-category{color:var(--writing);}
+  .listening .card-category{color:var(--listening);}
+
+  .card h3{font-size:1.05rem;font-weight:700;line-height:1.3;color:var(--text);}
+  .card-body{padding:0 22px 22px;flex:1;display:flex;flex-direction:column;}
+  .card-desc{font-size:.875rem;color:var(--muted);line-height:1.6;flex:1;margin-bottom:18px;}
+
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+  .tag{
+    padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600;
+  }
+  .reading .tag{background:#ede9fe;color:#6d28d9;}
+  .writing .tag{background:#fce7f3;color:#be185d;}
+  .listening .tag{background:#e0f2fe;color:#0369a1;}
+
+  .launch-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px;border-radius:12px;border:none;
+    font-size:.9rem;font-weight:700;cursor:pointer;
+    text-decoration:none;color:#fff;
+    transition:opacity .2s,transform .15s;
+    width:100%;
+  }
+  .launch-btn:hover{opacity:.9;transform:scale(1.02);}
+  .reading .launch-btn{background:var(--grad);}
+  .writing .launch-btn{background:linear-gradient(135deg,#db2777,#9333ea);}
+  .listening .launch-btn{background:linear-gradient(135deg,#0891b2,#7c3aed);}
+  .launch-btn svg{width:16px;height:16px;}
+
+  /* FOOTER */
+  footer{
+    text-align:center;padding:20px;
+    font-size:.8rem;color:var(--muted);
+    border-top:1px solid #e5e7eb;
+  }
+
+  /* INSTRUCTIONS */
+  .instructions{background:linear-gradient(135deg,#fdf4ff,#eff6ff);border-top:4px solid;border-image:var(--grad) 1;padding:28px 20px;}
+  .inst-inner{max-width:1100px;margin:0 auto;}
+  .inst-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .inst-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;}
+  .inst-step{display:flex;align-items:flex-start;gap:12px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(124,58,237,.08);}
+  .step-num{width:32px;height:32px;border-radius:50%;background:var(--grad);color:#fff;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step-text{font-size:.85rem;color:var(--muted);line-height:1.5;}
+  .step-text strong{color:var(--text);display:block;margin-bottom:2px;}
+
+  /* HIDDEN */
+  .card.hidden{display:none;}
+
+  @media(max-width:600px){
+    .hero{padding:36px 16px 44px;}
+    .grid{padding:12px 14px 36px;gap:16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">📚 GED 100 · Higher Colleges of Technology</div>
+  <h1>GED 100 Learning Hub</h1>
+  <p>All your reading, writing &amp; listening practice — in one place. Click any card to launch.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Reading Apps</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Writing App</div></div>
+    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Listening Sets</div></div>
+  </div>
+</div>
+
+<!-- START HERE BANNER -->
+<div class="instructions">
+  <div class="inst-inner">
+    <div class="inst-title">👋 Start Here — How to Use This Hub</div>
+    <div class="inst-steps">
+      <div class="inst-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Choose a skill</strong><br/>Use the buttons below to filter by Reading, Writing, or Listening.</div>
+      </div>
+      <div class="inst-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Pick an app</strong><br/>Read the card description to find the activity your teacher assigned.</div>
+      </div>
+      <div class="inst-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Click Launch</strong><br/>The app opens in a new tab. Come back here anytime to switch activities.</div>
+      </div>
+      <div class="inst-step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Save your work</strong><br/>Some apps let you download or copy your progress — don't forget before closing!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filter('all')">🌟 All Apps</button>
+  <button class="filter-btn reading" onclick="filter('reading')">📖 Reading</button>
+  <button class="filter-btn writing" onclick="filter('writing')">✍️ Writing</button>
+  <button class="filter-btn listening" onclick="filter('listening')">🎧 Listening</button>
+</div>
+
+<!-- ─── READING SECTION ─── -->
+<div class="section-label" id="sec-reading">📖 Reading</div>
+<div class="grid" id="grid-reading">
+
+  <div class="card reading" data-cat="reading">
+    <div class="card-top">
+      <div class="card-icon">🎮</div>
+      <div class="card-meta">
+        <div class="card-category">Reading · Gamified</div>
+        <h3>Super Reading Game</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Level up your reading! Answer questions, earn points, and beat the clock in this gamified cluster 6 challenge.</p>
+      <div class="tags">
+        <span class="tag">Cluster 6</span>
+        <span class="tag">Game</span>
+        <span class="tag">Points</span>
+      </div>
+      <a class="launch-btn" href="https://nana390-tech.github.io/GED-100-Reading-Cluster-6-GAMIFIED/" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch App
+      </a>
+    </div>
+  </div>
+
+  <div class="card reading" data-cat="reading">
+    <div class="card-top">
+      <div class="card-icon">📚</div>
+      <div class="card-meta">
+        <div class="card-category">Reading · Self-Paced</div>
+        <h3>GED 100 Super Reader Hub</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Work through full reading passages at your own pace. Unlock badges, track progress, and save your results.</p>
+      <div class="tags">
+        <span class="tag">Self-Paced</span>
+        <span class="tag">Badges</span>
+        <span class="tag">Progress</span>
+      </div>
+      <a class="launch-btn" href="https://nana390-tech.github.io/GED-100-Self-Paced-Readings/" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch App
+      </a>
+    </div>
+  </div>
+
+  <div class="card reading" data-cat="reading">
+    <div class="card-top">
+      <div class="card-icon">🥗</div>
+      <div class="card-meta">
+        <div class="card-category">Reading · Activities</div>
+        <h3>Food Science Reading</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Explore food science topics through guided reading clusters. Great for building academic vocabulary and comprehension.</p>
+      <div class="tags">
+        <span class="tag">Food Science</span>
+        <span class="tag">Vocabulary</span>
+        <span class="tag">Clusters</span>
+      </div>
+      <a class="launch-btn" href="https://nana390-tech.github.io/GED-100-READING-CLUSTERS-ACTIVITY/" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch App
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── WRITING SECTION ─── -->
+<div class="section-label" id="sec-writing">✍️ Writing</div>
+<div class="grid" id="grid-writing">
+
+  <div class="card writing" data-cat="writing">
+    <div class="card-top">
+      <div class="card-icon">📝</div>
+      <div class="card-meta">
+        <div class="card-category">Writing · Essay Practice</div>
+        <h3>Essay Builder: Advantages &amp; Disadvantages</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Build a well-structured advantages &amp; disadvantages essay step by step. Get instant feedback on structure, language and ideas.</p>
+      <div class="tags">
+        <span class="tag">Essay</span>
+        <span class="tag">Adv/Disadv</span>
+        <span class="tag">Feedback</span>
+        <span class="tag">Structure</span>
+      </div>
+      <a class="launch-btn" href="https://nana390-tech.github.io/GED-100---Final-Essay-Writing-practice-Adv-Diadv-/" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch App
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── LISTENING SECTION ─── -->
+<div class="section-label" id="sec-listening">🎧 Listening</div>
+<div class="grid" id="grid-listening">
+
+  <div class="card listening" data-cat="listening">
+    <div class="card-top">
+      <div class="card-icon">🎧</div>
+      <div class="card-meta">
+        <div class="card-category">Listening · BookWidgets</div>
+        <h3>GED 100 Listening Practice · Set 1</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Complete the first set of GED 100 listening activities. Listen carefully and answer the comprehension questions.</p>
+      <div class="tags">
+        <span class="tag">Listening</span>
+        <span class="tag">Comprehension</span>
+        <span class="tag">Set 1</span>
+      </div>
+      <a class="launch-btn" href="https://www.bookwidgets.com/play/63rfhJbl-iQAE6R1bUQAAA/4HYG94K/ged-100-listen?teacher_id=5564236231081984" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch on BookWidgets
+      </a>
+    </div>
+  </div>
+
+  <div class="card listening" data-cat="listening">
+    <div class="card-top">
+      <div class="card-icon">🔊</div>
+      <div class="card-meta">
+        <div class="card-category">Listening · BookWidgets</div>
+        <h3>GED 100 Listening Practice · Set 2</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-desc">Continue with the second set of listening activities. Focus on key details, main ideas and speaker tone.</p>
+      <div class="tags">
+        <span class="tag">Listening</span>
+        <span class="tag">Comprehension</span>
+        <span class="tag">Set 2</span>
+      </div>
+      <a class="launch-btn" href="https://www.bookwidgets.com/play/HHHGFFUd-iQAF81cg0QAAA/9HX9N94/ged-100-listeni?teacher_id=5564236231081984" target="_blank" rel="noopener">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-6.518-3.76A1 1 0 007 8.268v7.464a1 1 0 001.234.97l6.518-1.876A1 1 0 0016 13.83v-1.83a1 1 0 00-.248-.832z"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        Launch on BookWidgets
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Designed by Nazila Motahari &nbsp;·&nbsp; GED 100 · Higher Colleges of Technology, UAE &nbsp;·&nbsp; 2025
+</footer>
+
+<script>
+function filter(cat){
+  // update button styles
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const cards = document.querySelectorAll('.card');
+  const secs = ['reading','writing','listening'];
+
+  cards.forEach(c=>{
+    if(cat==='all'||c.dataset.cat===cat) c.classList.remove('hidden');
+    else c.classList.add('hidden');
+  });
+
+  // show/hide section labels & grids
+  secs.forEach(s=>{
+    const sec = document.getElementById('sec-'+s);
+    const grid = document.getElementById('grid-'+s);
+    const visible = cat==='all'||cat===s;
+    sec.style.display = visible?'flex':'none';
+    grid.style.display = visible?'grid':'none';
+  });
+}
+</script>
+</body>
+</html>
